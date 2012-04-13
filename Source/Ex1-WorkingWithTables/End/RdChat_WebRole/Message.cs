@@ -15,6 +15,7 @@ namespace RdChat_WebRole
         }
 
         public string Name { get; set; }
+
         public string Body { get; set; }
     }
 }

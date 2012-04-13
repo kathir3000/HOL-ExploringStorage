@@ -8,19 +8,6 @@
     {
         private static string imageStorePath;
 
-        // Application_Start is called after the OnStart method.
-        protected void Application_Start(object sender, EventArgs e)
-        {
-            if (imageStorePath == null)
-            {
-                ImageStorePath = WebConfigurationManager.AppSettings["ImageStorePath"];
-            }
-        }
-
-        protected void Application_End(object sender, EventArgs e)
-        {
-        }
-
         public static string ImageStorePath
         {
             get
@@ -32,6 +19,19 @@
             {
                 imageStorePath = value;
             }
+        }
+
+        // Application_Start is called after the OnStart method.
+        protected void Application_Start(object sender, EventArgs e)
+        {
+            if (imageStorePath == null)
+            {
+                ImageStorePath = WebConfigurationManager.AppSettings["ImageStorePath"];
+            }
+        }
+
+        protected void Application_End(object sender, EventArgs e)
+        {
         }
     }
 }

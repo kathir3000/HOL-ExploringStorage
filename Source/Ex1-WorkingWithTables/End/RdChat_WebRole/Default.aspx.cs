@@ -13,7 +13,6 @@ namespace RdChat_WebRole
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
         }
 
         /// <summary>
@@ -23,7 +22,7 @@ namespace RdChat_WebRole
         /// <param name="e">Button click event</param>
         protected void SubmitButton_Click(object sender, EventArgs e)
         {
-            var statusMessage = String.Empty;
+            var statusMessage = string.Empty;
 
             try
             {
@@ -37,11 +36,11 @@ namespace RdChat_WebRole
             }
             catch (DataServiceRequestException ex)
             {
-                statusMessage = "Unable to connect to the table service. Please check that the service is running.<br>"
+                statusMessage = "Unable to connect to the table storage server. Please check that the service is running.<br>"
                                  + ex.Message;
             }
 
-            status.Text = statusMessage;
+            this.status.Text = statusMessage;
         }
     }
 }

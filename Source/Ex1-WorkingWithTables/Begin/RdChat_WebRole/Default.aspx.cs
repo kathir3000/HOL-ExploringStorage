@@ -11,7 +11,6 @@ namespace RdChat_WebRole
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
         }
 
         /// <summary>
@@ -21,7 +20,6 @@ namespace RdChat_WebRole
         /// <param name="e">Button click event</param>
         protected void SubmitButton_Click(object sender, EventArgs e)
         {
-
         }
     }
 }

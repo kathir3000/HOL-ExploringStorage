@@ -28,9 +28,9 @@ namespace RdStorage_WebRole
             queue.CreateIfNotExist();
 
             // add the message to the queue
-            var msg = new CloudQueueMessage(txtMessage.Text);
+            var msg = new CloudQueueMessage(this.txtMessage.Text);
             queue.AddMessage(msg);
-            txtMessage.Text = string.Empty;
+            this.txtMessage.Text = string.Empty;
         }
     }
 }

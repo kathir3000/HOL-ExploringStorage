@@ -16,7 +16,7 @@
             get
             {
                 string path = Request.Params["path"];
-                if (String.IsNullOrEmpty(path))
+                if (string.IsNullOrEmpty(path))
                 {
                     return Global.ImageStorePath;
                 }
@@ -32,22 +32,22 @@
 
         protected void Page_PreRender(object sender, EventArgs e)
         {
-            GridView1.Columns[GridView1.Columns.Count - 1].Visible = (this.CurrentPath != Global.ImageStorePath);
+            this.GridView1.Columns[this.GridView1.Columns.Count - 1].Visible = this.CurrentPath != Global.ImageStorePath;
 
             if (RoleEnvironment.IsAvailable)
             {
-                MountedDrives.DataSource = from item in CloudDrive.GetMountedDrives()
+                this.MountedDrives.DataSource = from item in CloudDrive.GetMountedDrives()
                                            select new
                                            {
                                                Name = item.Key + " => " + item.Value,
                                                Value = item.Key
                                            };
 
-                MountedDrives.DataBind();
-                MountedDrives.SelectedValue = this.CurrentPath;
-                SelectDrive.Visible = true;
+                this.MountedDrives.DataBind();
+                this.MountedDrives.SelectedValue = this.CurrentPath;
+                this.SelectDrive.Visible = true;
 
-                NewDrive.Text = MountedDrives.Items.Count < 2 ? "New Drive" : "Delete Drive";
+                this.NewDrive.Text = this.MountedDrives.Items.Count < 2 ? "New Drive" : "Delete Drive";
             }
         }
 
@@ -58,7 +58,7 @@
                 var index = Convert.ToInt32(e.CommandArgument);
                 string fileName = ((GridView)e.CommandSource).DataKeys[index].Value as string;
                 File.Delete(fileName);
-                SelectImageStore(CurrentPath);
+                this.SelectImageStore(this.CurrentPath);
             }
         }
 
@@ -75,7 +75,7 @@
 
                 // create drive and its associated page blob
                 CloudDrive clonedDrive = account.CreateCloudDrive(cloneStoreBlobUri);
-                if (MountedDrives.Items.Count < 2)
+                if (this.MountedDrives.Items.Count < 2)
                 {
                     try
                     {
@@ -97,20 +97,20 @@
                         File.Copy(sourceFileName, destinationFileName, true);
                     }
 
-                    SelectImageStore(clonedStorePath);
+                    this.SelectImageStore(clonedStorePath);
                 }
                 else
                 {
                     clonedDrive.Unmount();
                     clonedDrive.Delete();
-                    SelectImageStore(Global.ImageStorePath);
+                    this.SelectImageStore(Global.ImageStorePath);
                 }
             }
         }
 
         protected void MountedDrives_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SelectImageStore(MountedDrives.SelectedValue);
+            this.SelectImageStore(this.MountedDrives.SelectedValue);
         }
 
         private void SelectImageStore(string path)

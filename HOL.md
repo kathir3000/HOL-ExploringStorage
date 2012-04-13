@@ -165,9 +165,10 @@ Together, the **PartitionKey** and **RowKey** define the **DataServiceKey** that
 1. Add two string properties to the **Message** class, **Name** and **Body**, to hold information about the chat message.
 
 	(Code Snippet - _ExploringWindowsAzureStorage-Ex01-03-TableSchemaProperties-CS_)
-	<!--mark: 1,2-->
+	<!--mark: 1,3-->
 	````C#
 	public string Name { get; set; }
+	
 	public string Body { get; set; }
 	````
 	
@@ -245,21 +246,21 @@ In this task, you add the code necessary to store messages in a Windows Azure ta
 1. Locate the **Application_Start** method in **Global.asax.cs** file and insert the following code (shown in **bold**) into it. This creates storage tables from **MessageDataServiceContext** that we created earlier.
 
 	(Code Snippet - _ExploringWindowsAzureStorage-Ex01-08-ApplicationStartMethod-CS_)
-	<!--mark: 5-13-->
+	<!--mark: 4-13-->
 	````C#
 	protected void Application_Start()
 	{
 	  ...
-	
 	  /// Create data table from MessageDataServiceContext
 	  /// It is recommended the data tables should be only created once. It is typically done as a 
 	  /// provisioning step and rarely in application code.
 	  var account = CloudStorageAccount.FromConfigurationSetting("DataConnectionString");
 	
 	  // dynamically create the tables
-	  CloudTableClient.CreateTablesFromModel(typeof(MessageDataServiceContext),
-	                          account.TableEndpoint.AbsoluteUri, account.Credentials);
-	
+	  CloudTableClient.CreateTablesFromModel(
+	  	  typeof(MessageDataServiceContext),
+	  	  account.TableEndpoint.AbsoluteUri,
+	  	  account.Credentials);
 	}
 	````
 	> **Note:** The code shown above creates the required tables from the model defined by the **MessageDataServiceContext** class created earlier. 
@@ -295,7 +296,7 @@ In this task, you add the code necessary to store messages in a Windows Azure ta
 	````C#
 	protected void SubmitButton_Click(object sender, EventArgs e)
 		{
-		  var statusMessage = String.Empty;
+		  var statusMessage = string.Empty;
 		
 		  try
 		  {
@@ -313,7 +314,7 @@ In this task, you add the code necessary to store messages in a Windows Azure ta
 							+ ex.Message;
 		   }
 		
-		   status.Text = statusMessage;
+		   this.status.Text = statusMessage;
 		}
 	````
 
@@ -413,7 +414,7 @@ In this task, you will create an image gallery web page to display images retrie
 	  ...
 	  private void EnsureContainerExists()
 	  {
-	    var container = GetContainer();
+	    var container = this.GetContainer();
 	    container.CreateIfNotExist();
 	
 	    var permissions = container.GetPermissions();
@@ -445,7 +446,7 @@ In this task, you will create an image gallery web page to display images retrie
 1. Insert the following code (shown in **bold**) in the **Page_Load** method to initialize the container and refresh the **asp:ListView** control on the page that displays the images retrieved from storage.
 
 	(Code Snippet - _ExploringWindowsAzureStorage-Ex02-04-PageLoadMethod-CS_)
-	<!--mark: 6-26-->
+	<!--mark: 6-27-->
 	````C#
 	public partial class _Default : System.Web.UI.Page
 	{
@@ -458,14 +459,15 @@ In this task, you will create an image gallery web page to display images retrie
 	      {
 	        this.EnsureContainerExists();
 	      }
+	      
 	      this.RefreshGallery();
 	    }
 	    catch (System.Net.WebException we)
 	    {
-	      status.Text = "Network error: " + we.Message;
+	      this.status.Text = "Network error: " + we.Message;
 	      if (we.Status == System.Net.WebExceptionStatus.ConnectFailure)
 	      {
-	        status.Text += "<br />Please check if the blob service is running at " +
+	        this.status.Text += "<br />Please check if the blob service is running at " +
 	        ConfigurationManager.AppSettings["storageEndpoint"];
 	      }
 	    }
@@ -488,13 +490,13 @@ In this task, you will create an image gallery web page to display images retrie
 	  ...
 	  private void RefreshGallery()
 	  {
-	    images.DataSource =
+	    this.images.DataSource =
 	      this.GetContainer().ListBlobs(new BlobRequestOptions()
 	      {
 	        UseFlatBlobListing = true,
 	        BlobListingDetails = BlobListingDetails.All
 	      });
-	    images.DataBind();
+	    this.images.DataBind();
 	  }
 	}
 	````
@@ -539,9 +541,9 @@ In this task, you add functionality to the image gallery Web page to enter metad
 	    var metadata = new NameValueCollection();
 	    metadata["Id"] = id;
 	    metadata["Filename"] = fileName;
-	    metadata["ImageName"] = String.IsNullOrEmpty(name) ? "unknown" : name;
-	    metadata["Description"] = String.IsNullOrEmpty(description) ? "unknown" : description;
-	    metadata["Tags"] = String.IsNullOrEmpty(tags) ? "unknown" : tags;
+	    metadata["ImageName"] = string.IsNullOrEmpty(name) ? "unknown" : name;
+	    metadata["Description"] = string.IsNullOrEmpty(description) ? "unknown" : description;
+	    metadata["Tags"] = string.IsNullOrEmpty(tags) ? "unknown" : tags;
 	
 	    // Add and commit metadata to blob
 	    blob.Metadata.Add(metadata);
@@ -553,31 +555,32 @@ In this task, you add functionality to the image gallery Web page to enter metad
 1. Complete the code in the event handler for the **Upload Image** button by inserting the code (shown in **bold** below) to **upload_Click** method.
 
 	(Code Snippet - _ExploringWindowsAzureStorage-Ex02-07-UploadClickMethod-CS_)
-	<!--mark: 6-23-->
+	<!--mark: 6-24-->
 	````C#
 	public partial class _Default : System.Web.UI.Page
 	{
 	  ...
 	  protected void upload_Click(object sender, EventArgs e)
 	  {
-	    if (imageFile.HasFile)
+	    if (this.imageFile.HasFile)
 	    {
-	      status.Text = "Inserted [" + imageFile.FileName + "] - Content Type [" + imageFile.PostedFile.ContentType + "] - Length [" + imageFile.PostedFile.ContentLength + "]";
+	      this.status.Text = "Inserted [" + this.imageFile.FileName + "] - Content Type [" + this.imageFile.PostedFile.ContentType + "] - Length [" + this.imageFile.PostedFile.ContentLength + "]";
 	
 	      this.SaveImage(
 	        Guid.NewGuid().ToString(),
-	        imageName.Text,
-	        imageDescription.Text,
-	        imageTags.Text,
-	        imageFile.FileName,
-	        imageFile.PostedFile.ContentType,
-	        imageFile.FileBytes
-	      );
+	        this.imageName.Text,
+	        this.imageDescription.Text,
+	        this.imageTags.Text,
+	        this.imageFile.FileName,
+	        this.imageFile.PostedFile.ContentType,
+	        this.imageFile.FileBytes);
 	
-	      RefreshGallery();
+	      this.RefreshGallery();
 	    }
 	    else
-	      status.Text = "No image file";
+	    {
+	      this.status.Text = "No image file";
+	    }
 	  }
 	  ...
 	}
@@ -615,14 +618,14 @@ Blobs can have metadata attached to them. Metadata headers can be set on a reque
 1. In the code-behind file, locate the **OnBlobDataBound** method and insert the following code (shown in **bold**) that retrieves the properties for each blob bound to the list view and creates a collection that contains name / value pairs for each metadata item found. The collection is then used as a data source for an **asp:Repeater** control that displays metadata for each image.
 
 	(Code Snippet - _ExploringWindowsAzureStorage-Ex02-08-OnBlobDataBoundMethod-CS_)
-	<!--mark: 3-35-->
+	<!--mark: 3-41-->
 	````C#
 	protected void OnBlobDataBound(object sender, ListViewItemEventArgs e)
 	{
 	  if (e.Item.ItemType == ListViewItemType.DataItem)
 	  {
 	    var metadataRepeater = e.Item.FindControl("blobMetadata") as Repeater;
-	    var blob = ((ListViewDataItem)(e.Item)).DataItem as CloudBlob;
+	    var blob = ((ListViewDataItem)e.Item).DataItem as CloudBlob;
 	    
 	    // If this blob is a snapshot, rename button to "Delete Snapshot"
 	    if (blob != null)
@@ -639,12 +642,15 @@ Blobs can have metadata attached to them. Metadata headers can be set on a reque
 	        }
 	        
 	        var snapshotBtn = e.Item.FindControl("SnapshotBlob") as LinkButton;
-	        if (snapshotBtn != null) snapshotBtn.Visible = false;
+	        if (snapshotBtn != null)
+	        {
+	          snapshotBtn.Visible = false;
+	        }
 	      }
 	      
 	      if (metadataRepeater != null)
 	      {
-	        //bind to metadata
+	        // bind to metadata
 	        metadataRepeater.DataSource = from key in blob.Metadata.AllKeys
 	                                      select new
 	                                      {
@@ -700,7 +706,7 @@ In this task, you will add functionality to the image gallery Web page to delete
 1. Add code (shown in **bold**) to **Default.aspx.cs** to implement the command handler for the _deleteBlob_ **asp:LinkButton** control. The code verifies if a blob exists in storage and deletes it.
 
 	(Code Snippet - _ExploringWindowsAzureStorage-Ex02-09-OnDeleteImageMethod-CS_)
-	<!--mark: 6-21-->
+	<!--mark: 6-23-->
 	````C#
 	public partial class _Default : System.Web.UI.Page
 	{
@@ -718,11 +724,13 @@ In this task, you will add functionality to the image gallery Web page to delete
 	    }
 	    catch (StorageClientException se)
 	    {
-	      status.Text = "Storage client error: " + se.Message;
+	      this.status.Text = "Storage client error: " + se.Message;
 	    }
-	    catch (Exception) { }
-	
-	    RefreshGallery();
+	    catch (Exception)
+	    {
+	    }
+	    
+	    this.RefreshGallery();
 	  }
 	  ...
 	}
@@ -745,7 +753,7 @@ Windows Azure Blob service has support for making copies of existing blobs. In t
 
 1.	Update the image list view to add an **asp:LinkButton** control that is used to copy images from the gallery container. Open the **Default.aspx** page in Source mode and locate the **ItemTemplate** for the images **asp:ListView** control. Uncomment the ASP.NET markup located immediately following the delete blob link button control (shown in **bold** text below.)
 
-	<!--mark: 15-19-->
+	<!--mark: 16-20-->
 	````HTML
 	...
 	<div class="item">
@@ -766,7 +774,7 @@ Windows Azure Blob service has support for making copies of existing blobs. In t
 	                      OnClientClick="return confirm('Copy image?');"
 	                      CommandName="Copy" 
 	                      CommandArgument='<%# Eval("Uri")%>'
-	                     runat="server" Text="Copy" oncommand="OnCopyImage" />
+	                      runat="server" Text="Copy" oncommand="OnCopyImage" />
 	      ...
 	    </li>
 	  </ul>
@@ -809,7 +817,7 @@ Windows Azure Blob service has support for making copies of existing blobs. In t
 	      newBlob.SetMetadata();
 	
 	      // Render all blobs
-	      RefreshGallery();
+	      this.RefreshGallery();
 	    }
 	  }
 	  ...
@@ -893,9 +901,9 @@ In this task, you add functionality to take a snapshot of a blob that contains i
 	      // Create a snapshot
 	      var snapshot = srcBlob.CreateSnapshot();
 	
-	      status.Text = "A snapshot has been taken for image blob:" + srcBlob.Uri + " at " + snapshot.SnapshotTime;
+	      this.status.Text = "A snapshot has been taken for image blob:" + srcBlob.Uri + " at " + snapshot.SnapshotTime;
 	
-	      RefreshGallery();
+	      this.RefreshGallery();
 	    }
 	  }
 	  ...
@@ -1030,12 +1038,11 @@ In this task, you implement the **RdStorage_WebRole** web application to send me
 1. Next, add the following code (shown in **bold**) immediately after the code inserted in the previous step to obtain an instance of the **QueueStorage** helper object and create the message queue if it does not exist.
 
 	(Code Snippet - _ExploringWindowsAzureStorage-Ex03-03-WebRoleCreateQueue-CS_)
-	<!--mark: 7-9-->
+	<!--mark: 5-8-->
 	````C#
 	protected void btnSend_Click(object sender, EventArgs e)
 	{
 	  ...
-	  // Code inserted in previous steps
 	
 	  // retrieve a reference to the messages queue
 	  var queueClient = storageAccount.CreateCloudQueueClient();
@@ -1047,17 +1054,16 @@ In this task, you implement the **RdStorage_WebRole** web application to send me
 1. Add the following code (shown in **bold**) immediately after the code inserted in the previous step to put the message entered by the user into the queue.
 
 	(Code Snippet - _ExploringWindowsAzureStorage-Ex03-04-WebRoleAddMessage-CS_)
-	<!--mark: 6-9-->
+	<!--mark: 5-8-->
 	````C#
 	protected void btnSend_Click(object sender, EventArgs e)
 	{
 	  ...
-	  // Code inserted in previous steps
 	
 	  // add the message to the queue
-	  var msg = new CloudQueueMessage(txtMessage.Text);
+	  var msg = new CloudQueueMessage(this.txtMessage.Text);
 	  queue.AddMessage(msg);
-	  txtMessage.Text = string.Empty;
+	  this.txtMessage.Text = string.Empty;
 	}
 	````
 
@@ -1081,16 +1087,14 @@ In this task, you update the worker role to retrieve messages from the queue and
 1. Add the following code (shown in **bold**) to the **Application_Start** method to initialize the account information.
 
 	(Code Snippet - _ExploringWindowsAzureStorage-Ex03-06-InitializeAccount-CS_)
-	<!--mark: 4-7-->	
+	<!--mark: 3-6-->	
 	````C#
 	void Application_Start(object sender, EventArgs e)
 	{
-
 	  CloudStorageAccount.SetConfigurationSettingPublisher((configName, configSetter) =>
 	  {
 		configSetter(RoleEnvironment.GetConfigurationSettingValue(configName));
 	  });
-
 	}
 	````
 
@@ -1138,7 +1142,6 @@ In this task, you update the worker role to retrieve messages from the queue and
 	using Microsoft.WindowsAzure.Diagnostics;
 	using Microsoft.WindowsAzure.ServiceRuntime;
 	using Microsoft.WindowsAzure.StorageClient;
-
 	````
 
 1. In the **Run** method, obtain an instance of the **QueueStorage** helper object and retrieve a reference to the _messages_ queue. To do this, add the following code (shown in **bold**) and remove the following lines of code (shown in ~~strikethrough~~) that simulate the worker role latency..
@@ -1169,13 +1172,12 @@ In this task, you update the worker role to retrieve messages from the queue and
 1. Next, add the following highlighted code to retrieve messages and write them to the compute emulator log. The message is then removed from the queue.
 
 	(Code Snippet - _ExploringWindowsAzureStorage-Ex03-11-WorkerGetMessages-CS_)
-	<!--mark: 6-21-->
+	<!--mark: 5-20-->
 	````C#
 	public override void Run()
 	{
 	  ...
-	  //Code inserted from previous steps
-
+	  
 	  // retrieve messages and write them to the compute emulator log
 	  while (true)
 	  {
@@ -1434,13 +1436,13 @@ In this task, you update the application to run as a Windows Azure cloud service
 	<!--mark: 3-7-->
 	````C#
 	protected void Application_End(object sender, EventArgs e)
-		{
-		  // obtain a reference to the cloud drive and unmount it
-		  CloudStorageAccount account = CloudStorageAccount.FromConfigurationSetting("DataConnectionString");
-		  string imageStoreBlobUri = RoleEnvironment.GetConfigurationSettingValue("ImageStoreBlobUri");
-		  CloudDrive imageStoreDrive = account.CreateCloudDrive(imageStoreBlobUri);
-		  imageStoreDrive.Unmount();
-	 }
+	{
+		// obtain a reference to the cloud drive and unmount it
+		CloudStorageAccount account = CloudStorageAccount.FromConfigurationSetting("DataConnectionString");
+		string imageStoreBlobUri = RoleEnvironment.GetConfigurationSettingValue("ImageStoreBlobUri");
+		CloudDrive imageStoreDrive = account.CreateCloudDrive(imageStoreBlobUri);
+		imageStoreDrive.Unmount();
+	}
 	````
 
 	> **Note:** The code above retrieves a reference to the previously mounted cloud drive and then unmounts it. 
@@ -1538,21 +1540,21 @@ In this task, you update the application to create a new drive in the cloud, mou
 	protected void Page_PreRender(object sender, EventArgs e)
 	{
 	  GridView1.Columns[GridView1.Columns.Count - 1].Visible = (this.CurrentPath != Global.ImageStorePath);
-
+	  
 	  if (RoleEnvironment.IsAvailable)
 	  {
-		MountedDrives.DataSource = from item in CloudDrive.GetMountedDrives()
-								   select new
-								   {
-									 Name = item.Key + " => " + item.Value,
-									 Value = item.Key
-								   };
-
-		MountedDrives.DataBind();
-		MountedDrives.SelectedValue = this.CurrentPath;
-		SelectDrive.Visible = true;
-
-		NewDrive.Text = MountedDrives.Items.Count < 2 ? "New Drive" : "Delete Drive";
+	    this.MountedDrives.DataSource = from item in CloudDrive.GetMountedDrives()
+										select new
+										{
+											Name = item.Key + " => " + item.Value,
+											Value = item.Key
+										};
+	   
+		this.MountedDrives.DataBind();
+		this.MountedDrives.SelectedValue = this.CurrentPath;
+		this.SelectDrive.Visible = true;
+	   
+		this.NewDrive.Text = this.MountedDrives.Items.Count < 2 ? "New Drive" : "Delete Drive";
 	  }
 	}
 	````
@@ -1577,7 +1579,7 @@ In this task, you update the application to create a new drive in the cloud, mou
 
 		// create drive and its associated page blob
 		CloudDrive clonedDrive = account.CreateCloudDrive(cloneStoreBlobUri);
-		if (MountedDrives.Items.Count < 2)
+		if (this.MountedDrives.Items.Count < 2)
 		{
 		  try
 		  {
@@ -1599,13 +1601,13 @@ In this task, you update the application to create a new drive in the cloud, mou
 			File.Copy(sourceFileName, destinationFileName, true);
 		  }
 
-		  SelectImageStore(clonedStorePath);
+		  this.SelectImageStore(clonedStorePath);
 		}
 		else
 		{
 		  clonedDrive.Unmount();
 		  clonedDrive.Delete();
-		  SelectImageStore(Global.ImageStorePath);
+		  this.SelectImageStore(Global.ImageStorePath);
 		}
 	  }
 	}
@@ -1620,7 +1622,7 @@ In this task, you update the application to create a new drive in the cloud, mou
 	````C#
 	protected void MountedDrives_SelectedIndexChanged(object sender, EventArgs e)
 	{
-	  SelectImageStore(MountedDrives.SelectedValue);
+	  this.SelectImageStore(this.MountedDrives.SelectedValue);
 	}
 	````
  

@@ -19,14 +19,13 @@
 
             // For information on handling configuration changes
             // see the MSDN topic at http://go.microsoft.com/fwlink/?LinkId=166357.
-            RoleEnvironment.Changing += RoleEnvironmentChanging;
+            RoleEnvironment.Changing += this.RoleEnvironmentChanging;
 
             return base.OnStart();
         }
 
         public override void OnStop()
         {
-
             base.OnStop();
         }
 
@@ -39,6 +38,5 @@
                 e.Cancel = true;
             }
         }
-
     }
 }

@@ -12,6 +12,19 @@
     {
         private static string imageStorePath;
 
+        public static string ImageStorePath
+        {
+            get
+            {
+                return imageStorePath;
+            }
+
+            set
+            {
+                imageStorePath = value;
+            }
+        }
+
         // Application_Start is called after the OnStart method.
         protected void Application_Start(object sender, EventArgs e)
         {
@@ -64,7 +77,6 @@
             {
                 Trace.WriteLine("Error: " + driveException.Message);
             }
-
         }
 
         protected void Application_End(object sender, EventArgs e)
@@ -74,19 +86,6 @@
             string imageStoreBlobUri = RoleEnvironment.GetConfigurationSettingValue("ImageStoreBlobUri");
             CloudDrive imageStoreDrive = account.CreateCloudDrive(imageStoreBlobUri);
             imageStoreDrive.Unmount();
-        }
-
-        public static string ImageStorePath
-        {
-            get
-            {
-                return imageStorePath;
-            }
-
-            set
-            {
-                imageStorePath = value;
-            }
         }
     }
 }

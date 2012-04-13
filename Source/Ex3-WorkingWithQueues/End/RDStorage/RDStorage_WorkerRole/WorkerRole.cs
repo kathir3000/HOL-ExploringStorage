@@ -41,7 +41,6 @@ namespace RdStorage_WorkerRole
                     }
                 }
             }
-
         }
 
         public override bool OnStart()

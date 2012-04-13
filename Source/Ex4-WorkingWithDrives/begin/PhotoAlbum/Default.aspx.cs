@@ -12,7 +12,7 @@
             get
             {
                 string path = Request.Params["path"];
-                if (String.IsNullOrEmpty(path))
+                if (string.IsNullOrEmpty(path))
                 {
                     return Global.ImageStorePath;
                 }
@@ -28,7 +28,7 @@
 
         protected void Page_PreRender(object sender, EventArgs e)
         {
-            GridView1.Columns[GridView1.Columns.Count - 1].Visible = (this.CurrentPath != Global.ImageStorePath);
+            this.GridView1.Columns[this.GridView1.Columns.Count - 1].Visible = this.CurrentPath != Global.ImageStorePath;
         }
 
         protected void GridView1_RowCommand(object sender, GridViewCommandEventArgs e)
@@ -38,7 +38,7 @@
                 var index = Convert.ToInt32(e.CommandArgument);
                 string fileName = ((GridView)e.CommandSource).DataKeys[index].Value as string;
                 File.Delete(fileName);
-                SelectImageStore(CurrentPath);
+                this.SelectImageStore(this.CurrentPath);
             }
         }
 

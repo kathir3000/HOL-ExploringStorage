@@ -35,7 +35,7 @@
                 <li><span>Tags</span><asp:TextBox ID="imageTags" runat="server"/></li>
                 <li><span>Filename</span><asp:FileUpload ID="imageFile" runat="server" /></li>
             </ul>
-            <asp:Button ID="upload" runat="server" onclick="upload_Click" Text="Upload Image" />
+            <asp:Button ID="upload" runat="server" onclick="Upload_Click" Text="Upload Image" />
         </div>
         <div style=" float:left;">
         Status: <asp:Label ID="status" runat="server" />

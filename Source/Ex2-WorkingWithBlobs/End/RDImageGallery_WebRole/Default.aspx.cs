@@ -25,14 +25,15 @@
                 {
                     this.EnsureContainerExists();
                 }
+
                 this.RefreshGallery();
             }
             catch (System.Net.WebException we)
             {
-                status.Text = "Network error: " + we.Message;
+                this.status.Text = "Network error: " + we.Message;
                 if (we.Status == System.Net.WebExceptionStatus.ConnectFailure)
                 {
-                    status.Text += "<br />Please check if the blob service is running at " +
+                    this.status.Text += "<br />Please check if the blob service is running at " +
                     ConfigurationManager.AppSettings["storageEndpoint"];
                 }
             }
@@ -42,26 +43,27 @@
             }
         }
 
-        protected void upload_Click(object sender, EventArgs e)
+        protected void Upload_Click(object sender, EventArgs e)
         {
-            if (imageFile.HasFile)
+            if (this.imageFile.HasFile)
             {
-                status.Text = "Inserted [" + imageFile.FileName + "] - Content Type [" + imageFile.PostedFile.ContentType + "] - Length [" + imageFile.PostedFile.ContentLength + "]";
+                this.status.Text = "Inserted [" + this.imageFile.FileName + "] - Content Type [" + this.imageFile.PostedFile.ContentType + "] - Length [" + this.imageFile.PostedFile.ContentLength + "]";
 
                 this.SaveImage(
                   Guid.NewGuid().ToString(),
-                  imageName.Text,
-                  imageDescription.Text,
-                  imageTags.Text,
-                  imageFile.FileName,
-                  imageFile.PostedFile.ContentType,
-                  imageFile.FileBytes
-                );
+                  this.imageName.Text,
+                  this.imageDescription.Text,
+                  this.imageTags.Text,
+                  this.imageFile.FileName,
+                  this.imageFile.PostedFile.ContentType,
+                  this.imageFile.FileBytes);
 
-                RefreshGallery();
+                this.RefreshGallery();
             }
             else
-                status.Text = "No image file";
+            {
+                this.status.Text = "No image file";
+            }
         }
 
         /// <summary>
@@ -74,7 +76,7 @@
             if (e.Item.ItemType == ListViewItemType.DataItem)
             {
                 var metadataRepeater = e.Item.FindControl("blobMetadata") as Repeater;
-                var blob = ((ListViewDataItem)(e.Item)).DataItem as CloudBlob;
+                var blob = ((ListViewDataItem)e.Item).DataItem as CloudBlob;
 
                 // If this blob is a snapshot, rename button to "Delete Snapshot"
                 if (blob != null)
@@ -91,12 +93,15 @@
                         }
 
                         var snapshotBtn = e.Item.FindControl("SnapshotBlob") as LinkButton;
-                        if (snapshotBtn != null) snapshotBtn.Visible = false;
+                        if (snapshotBtn != null)
+                        {
+                            snapshotBtn.Visible = false;
+                        }
                     }
 
                     if (metadataRepeater != null)
                     {
-                        //bind to metadata
+                        // bind to metadata
                         metadataRepeater.DataSource = from key in blob.Metadata.AllKeys
                                                       select new
                                                       {
@@ -127,11 +132,13 @@
             }
             catch (StorageClientException se)
             {
-                status.Text = "Storage client error: " + se.Message;
+                this.status.Text = "Storage client error: " + se.Message;
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+            }
 
-            RefreshGallery();
+            this.RefreshGallery();
         }
 
         /// <summary>
@@ -165,7 +172,7 @@
                 newBlob.SetMetadata();
 
                 // Render all blobs
-                RefreshGallery();
+                this.RefreshGallery();
             }
         }
 
@@ -185,15 +192,15 @@
                 // Create a snapshot
                 var snapshot = srcBlob.CreateSnapshot();
 
-                status.Text = "A snapshot has been taken for image blob:" + srcBlob.Uri + " at " + snapshot.SnapshotTime;
+                this.status.Text = "A snapshot has been taken for image blob:" + srcBlob.Uri + " at " + snapshot.SnapshotTime;
 
-                RefreshGallery();
+                this.RefreshGallery();
             }
         }
 
         private void EnsureContainerExists()
         {
-            var container = GetContainer();
+            var container = this.GetContainer();
             container.CreateIfNotExist();
 
             var permissions = container.GetPermissions();
@@ -212,13 +219,13 @@
 
         private void RefreshGallery()
         {
-            images.DataSource =
+            this.images.DataSource =
               this.GetContainer().ListBlobs(new BlobRequestOptions()
               {
                   UseFlatBlobListing = true,
                   BlobListingDetails = BlobListingDetails.All
               });
-            images.DataBind();
+            this.images.DataBind();
         }
 
         private void SaveImage(string id, string name, string description, string tags, string fileName, string contentType, byte[] data)
@@ -232,9 +239,9 @@
             var metadata = new NameValueCollection();
             metadata["Id"] = id;
             metadata["Filename"] = fileName;
-            metadata["ImageName"] = String.IsNullOrEmpty(name) ? "unknown" : name;
-            metadata["Description"] = String.IsNullOrEmpty(description) ? "unknown" : description;
-            metadata["Tags"] = String.IsNullOrEmpty(tags) ? "unknown" : tags;
+            metadata["ImageName"] = string.IsNullOrEmpty(name) ? "unknown" : name;
+            metadata["Description"] = string.IsNullOrEmpty(description) ? "unknown" : description;
+            metadata["Tags"] = string.IsNullOrEmpty(tags) ? "unknown" : tags;
 
             // Add and commit metadata to blob
             blob.Metadata.Add(metadata);

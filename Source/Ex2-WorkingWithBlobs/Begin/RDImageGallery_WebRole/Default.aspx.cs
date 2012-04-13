@@ -17,7 +17,7 @@
         {
         }
 
-        protected void upload_Click(object sender, EventArgs e)
+        protected void Upload_Click(object sender, EventArgs e)
         {
         }
 
