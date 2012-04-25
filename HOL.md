@@ -147,12 +147,12 @@ In this task, you create the model where the data is stored for the Chat applica
 	> **Note:** The **TableServiceEntity** class is included as part of the **Microsoft.WindowsAzure.StorageClient** library. It defines the **PartititionKey, RowKey** and **TimeStamp** system properties required by every entity stored in a Windows Azure table.
 Together, the **PartitionKey** and **RowKey** define the **DataServiceKey** that uniquely identifies every entity within a table.
 
-1. Add a default constructor to the **Message** class that initializes its **PartitionKey** and **RowKey** properties.
+1. Add a method to the **Message** class to initialize the **PartitionKey** and **RowKey** properties.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex01-02-MessageConstructor-CS_)
+	(Code Snippet - _ExploringWindowsAzureStorage-Ex01-02-SetKeysMethod-CS_)
 	<!--mark: 1-5-->
 	````C#
-	public Message()
+	public void SetKeys()
 	{
 	  PartitionKey = "a";
 	  RowKey = string.Format("{0:10}_{1}", DateTime.MaxValue.Ticks - DateTime.Now.Ticks, Guid.NewGuid());
@@ -222,7 +222,7 @@ Together, the **PartitionKey** and **RowKey** define the **DataServiceKey** that
 1. Finally, add a method to the **MessageDataServiceContext** class to insert new messages into the table. You will use this method later when implementing the chat functionality.
 
 	(Code Snippet - _ExploringWindowsAzureStorage-Ex01-07-AddMessageMethod-CS_)
-	<!--mark: 5-9-->
+	<!--mark: 5-13-->
 	````C#
 	public class MessageDataServiceContext
 		: TableServiceContext
@@ -230,7 +230,11 @@ Together, the **PartitionKey** and **RowKey** define the **DataServiceKey** that
 	  ...
 	  public void AddMessage(string name, string body)
 	  {
-		this.AddObject("Messages", new Message { Name = name, Body = body });
+		Message message = new Message();
+		message.SetKeys();
+		message.Name = name;
+		message.Body = body;
+		this.AddObject("Messages", message);
 		this.SaveChanges();
 	  }
 	}

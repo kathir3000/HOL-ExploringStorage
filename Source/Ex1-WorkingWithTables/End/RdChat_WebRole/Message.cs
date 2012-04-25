@@ -8,14 +8,14 @@ namespace RdChat_WebRole
     public class Message
         : Microsoft.WindowsAzure.StorageClient.TableServiceEntity
     {
-        public Message()
+        public string Name { get; set; }
+
+        public string Body { get; set; }
+
+        public void SetKeys()
         {
             PartitionKey = "a";
             RowKey = string.Format("{0:10}_{1}", DateTime.MaxValue.Ticks - DateTime.Now.Ticks, Guid.NewGuid());
         }
-
-        public string Name { get; set; }
-
-        public string Body { get; set; }
     }
 }

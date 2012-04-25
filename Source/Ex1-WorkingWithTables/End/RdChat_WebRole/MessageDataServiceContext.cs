@@ -25,7 +25,11 @@ namespace RdChat_WebRole
 
         public void AddMessage(string name, string body)
         {
-            this.AddObject("Messages", new Message { Name = name, Body = body });
+            Message message = new Message();
+            message.SetKeys();
+            message.Name = name;
+            message.Body = body;
+            this.AddObject("Messages", message);
             this.SaveChanges();
         }
     }
