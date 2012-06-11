@@ -25,21 +25,24 @@ In this hands-on lab, you will learn how to:
 - IIS 7 (with ASP.NET, WCF HTTP Activation, Tracing)
 - [Microsoft .NET Framework 4.0] [1]
 - [Microsoft Visual Studio 2010] [2]
-- [SQL Server 2005 Express Edition (or later)] [3]
-- [Windows Azure Tools for Microsoft Visual Studio 1.6] [4]
+- [SQL Server 2012 Express Edition] [3]
+- [Windows Azure Tools for Microsoft Visual Studio 1.7] [4]
+- A Windows Azure subscription - you can sign up for free trial [here](http://bit.ly/WindowsAzureFreeTrial)
 
 [1]: http://go.microsoft.com/fwlink/?linkid=186916
 [2]: http://msdn.microsoft.com/vstudio/products/
 [3]: http://www.microsoft.com/sqlserver
 [4]: http://www.microsoft.com/windowsazure/sdk/
 
+>**Note:** This lab was designed to use Windows 7.
+	
 <a name="Setup" />
 ### Setup ###
 
 In order to execute the exercises in this hands-on lab you need to set up your environment.
 
 1. Open a Windows Explorer window and browse to the lab’s Source folder.
-1. Double-click the **Setup.cmd** file in this folder to launch the setup process that will configure your environment and install the Visual Studio code snippets for this lab.
+1. Execute the **Setup.cmd** file with Administrator privileges to launch the setup process. This process will configure your environment and install the Visual Studio code snippets for this lab.
 1. If the User Account Control dialog is shown, confirm the action to proceed.
 
 > **Note:** Make sure you have checked all the dependencies for this lab before running the setup.
@@ -63,7 +66,9 @@ This hands-on lab includes the following exercises:
 
 Estimated time to complete this lab: **90 minutes**.
 
-> **Note:** When you first start Visual Studio, you must select one of the predefined settings collections. Every predefined collection is designed to match a particular development style and determines window layouts, editor behavior, IntelliSense code snippets, and dialog box options. The procedures in this lab describe the actions necessary to accomplish a given task in Visual Studio when using the **General Development Settings** collection. If you choose a different settings collection for your development environment, there may be differences in these procedures that you need to take into account.
+>**Note:** Each exercise is accompanied by a starting solution located in the Begin folder of the exercise that allows you to follow each exercise independently of the others. Please be aware that the code snippets that are added during an exercise are missing from these starting solutions and that they will not necessarily work until you complete the exercise. Inside the source code for an exercise, you will also find an End folder containing a Visual Studio solution with the code that results from completing the steps in the corresponding exercise. You can use these solutions as guidance if you need additional help as you work through this hands-on lab.
+>
+>When you first start Visual Studio, you must select one of the predefined settings collections. Every predefined collection is designed to match a particular development style and determines window layouts, editor behavior, IntelliSense code snippets, and dialog box options. The procedures in this lab describe the actions necessary to accomplish a given task in Visual Studio when using the **General Development Settings** collection. If you choose a different settings collection for your development environment, there may be differences in these procedures that you need to take into account.
 
 <a name="Exercise1" />
 ### Exercise 1: Working with Tables ###
@@ -76,6 +81,8 @@ To access Windows Azure Table Service, you use a REST API that is compatible wit
 
 [5]: http://msdn.microsoft.com/en-us/library/cc668792.aspx
 [6]: http://msdn.microsoft.com/en-us/library/cc668772.aspx
+
+>**Note:** To reduce typing, you can right-click where you want to insert source code, select Insert Snippet, select My Code Snippets and then select the entry matching the current exercise step.
 
 <a name="Ex1Task1" />
 #### Task 1 - Configuring Storage Account Settings ####
@@ -135,7 +142,7 @@ In this task, you create the model where the data is stored for the Chat applica
 
 1. Update the declaration of the Message class to derive from the **Microsoft.WindowsAzure.StorageClient.TableServiceEntity** class. 
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex01-01-MessageClass-CS_)
+	(Code Snippet - _ExploringStorage-Ex1-01-MessageClass-CS_)
 	<!--mark: 2-->
 	````C#
 	public class Message 
@@ -147,12 +154,12 @@ In this task, you create the model where the data is stored for the Chat applica
 	> **Note:** The **TableServiceEntity** class is included as part of the **Microsoft.WindowsAzure.StorageClient** library. It defines the **PartititionKey, RowKey** and **TimeStamp** system properties required by every entity stored in a Windows Azure table.
 Together, the **PartitionKey** and **RowKey** define the **DataServiceKey** that uniquely identifies every entity within a table.
 
-1. Add a method to the **Message** class to initialize the **PartitionKey** and **RowKey** properties.
+1. Add a default constructor to the **Message** class that initializes its **PartitionKey** and **RowKey** properties.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex01-02-SetKeysMethod-CS_)
+	(Code Snippet - _ExploringStorage-Ex1-02-MessageConstructor-CS_)
 	<!--mark: 1-5-->
 	````C#
-	public void SetKeys()
+	public Message()
 	{
 	  PartitionKey = "a";
 	  RowKey = string.Format("{0:10}_{1}", DateTime.MaxValue.Ticks - DateTime.Now.Ticks, Guid.NewGuid());
@@ -164,7 +171,7 @@ Together, the **PartitionKey** and **RowKey** define the **DataServiceKey** that
 
 1. Add two string properties to the **Message** class, **Name** and **Body**, to hold information about the chat message.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex01-03-TableSchemaProperties-CS_)
+	(Code Snippet - _ExploringStorage-Ex1-03-TableSchemaProperties-CS_)
 	<!--mark: 1,3-->
 	````C#
 	public string Name { get; set; }
@@ -176,7 +183,7 @@ Together, the **PartitionKey** and **RowKey** define the **DataServiceKey** that
 1. Next, add a class to the Web role project to define the WCF Data Services **DataServiceContext** required to access the Messages table. To do this, in **Solution Explorer**, right-click the **RdChat_WebRole** project node, point to **Add** and select **Class**. In the **Add New Item** dialog, set the **Name** to **MessageDataServiceContext.cs** and then click **Add**.
 1. In the new class file, add the following using namespace directives.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex01-04-Namespace-CS_)
+	(Code Snippet - _ExploringStorage-Ex1-04-Namespace-CS_)
 	<!--mark: 1,2-->
 	````C#
 	using Microsoft.WindowsAzure;
@@ -185,7 +192,7 @@ Together, the **PartitionKey** and **RowKey** define the **DataServiceKey** that
 
 1. Replace the declaration of the new class to derive from the **TableServiceContext** class and include a default constructor to initialize the base class with the storage account information.
 	
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex01-05-MessageDataServiceContextClass-CS_)
+	(Code Snippet - _ExploringStorage-Ex1-05-MessageDataServiceContextClass-CS_)
 	<!--mark: 3-10-->
 	````C#
 	namespace RdChat_WebRole
@@ -202,7 +209,7 @@ Together, the **PartitionKey** and **RowKey** define the **DataServiceKey** that
 	````
 1. Now, add a property to the **MessageDataServiceContext** class to return a data service query for the Messages table. 
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex01-06-MessagesProperty-CS_)
+	(Code Snippet - _ExploringStorage-Ex1-06-MessagesProperty-CS_)
 	<!--mark: 5-11-->
 	````C#
 	public class MessageDataServiceContext
@@ -221,8 +228,8 @@ Together, the **PartitionKey** and **RowKey** define the **DataServiceKey** that
 	
 1. Finally, add a method to the **MessageDataServiceContext** class to insert new messages into the table. You will use this method later when implementing the chat functionality.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex01-07-AddMessageMethod-CS_)
-	<!--mark: 5-13-->
+	(Code Snippet - _ExploringStorage-Ex1-07-AddMessageMethod-CS_)
+	<!--mark: 5-9-->
 	````C#
 	public class MessageDataServiceContext
 		: TableServiceContext
@@ -230,11 +237,7 @@ Together, the **PartitionKey** and **RowKey** define the **DataServiceKey** that
 	  ...
 	  public void AddMessage(string name, string body)
 	  {
-		Message message = new Message();
-		message.SetKeys();
-		message.Name = name;
-		message.Body = body;
-		this.AddObject("Messages", message);
+		this.AddObject("Messages", new Message { Name = name, Body = body });
 		this.SaveChanges();
 	  }
 	}
@@ -249,7 +252,8 @@ In this task, you add the code necessary to store messages in a Windows Azure ta
 
 1. Locate the **Application_Start** method in **Global.asax.cs** file and insert the following code (shown in **bold**) into it. This creates storage tables from **MessageDataServiceContext** that we created earlier.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex01-08-ApplicationStartMethod-CS_)
+	(Code Snippet - _ExploringStorage-Ex1-08-ApplicationStartMethod-CS_)
+
 	<!--mark: 4-13-->
 	````C#
 	protected void Application_Start()
@@ -267,6 +271,7 @@ In this task, you add the code necessary to store messages in a Windows Azure ta
 	  	  account.Credentials);
 	}
 	````
+
 	> **Note:** The code shown above creates the required tables from the model defined by the **MessageDataServiceContext** class created earlier. 
 	Note that the recommendation is that data tables should only be created once. Typically, you would do this during a provisioning step and rarely in application code. The **Application_Start** method in the **Global** class is a recommended place for this initialization logic.
 	To retrieve and display messages, the method creates an instance of the **MessageDataServiceContext** class and initializes it from account information available in the service configuration file (**ServiceConfiguration.cscfg**). It binds the **Messages** property, which returns a data service query for th_e Messages_ table, to a **ListView** control on the page for display. 
@@ -274,7 +279,7 @@ In this task, you add the code necessary to store messages in a Windows Azure ta
 
 1. Make sure the following namespace directives exist at the top of the **Global.asax.cs** code file. They are for the utility storage classes and for the **ServiceRuntime** classes.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex01-09-GlobalNamespace-CS_)
+	(Code Snippet - _ExploringStorage-Ex1-09-GlobalNamespace-CS_)
 	<!--mark: 1-3-->
 	````C#
 	using Microsoft.WindowsAzure;
@@ -286,7 +291,7 @@ In this task, you add the code necessary to store messages in a Windows Azure ta
 
 	Make sure the following namespace directives are included in the **Default.aspx.cs** code-behind file.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex01-10-Namespace-CS_)
+	(Code Snippet - _ExploringStorage-Ex1-10-Namespace-CS_)
 	<!--mark: 1,2-->
 	````C#
 	using System.Data.Services.Client;
@@ -295,7 +300,7 @@ In this task, you add the code necessary to store messages in a Windows Azure ta
 	
 1. Locate the **SubmitButton_Click** event handler in **Default.aspx.cs** and insert the following code (shown in **bold**) into the method body to save messages entered by the user to the Table Service, then data bind messages from Table Service to the page. The method uses the **AddMessage** method, which you created earlier in the lab, to insert a new **Message** entity into the table. 
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex01-11-SubmitButtonClick-CS_)
+	(Code Snippet - _ExploringStorage-Ex1-11-SubmitButtonClick-CS_)
 	<!--mark: 3-21-->	
 	````C#
 	protected void SubmitButton_Click(object sender, EventArgs e)
@@ -399,7 +404,7 @@ In this task, you will create an image gallery web page to display images retrie
 
 1. Make sure the following namespace directives exist at the top of the code file. They are for the utility storage classes and for the **ServiceRuntime** classes.
 	
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex02-01-Namespace-CS_)
+	(Code Snippet - _ExploringStorage-Ex2-01-Namespace-CS_)
 	<!--mark: 1-4-->
 	````C#
 	using Microsoft.WindowsAzure;
@@ -410,7 +415,7 @@ In this task, you will create an image gallery web page to display images retrie
 	
 1. For this lab, you need to store the blobs in a public container, so they are visible on the web to normal, anonymous users.  In this step, you will ensure that the container specified in **ServiceConfiguration.cscfg** exists. To do this, add the following method at the bottom of the **_Default** class.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex02-02-EnsureContainerExistsMethod-CS_)
+	(Code Snippet - _ExploringStorage-Ex2-02-EnsureContainerExistsMethod-CS_)
 	<!--mark: 4-12-->
 	````C#
 	public partial class _Default : System.Web.UI.Page
@@ -430,7 +435,7 @@ In this task, you will create an image gallery web page to display images retrie
 	
 1. Next, you will create a utility method to retrieve a reference to the container created by the code in the previous step.  This method will be called in almost all operations since the container is involved with all blob operations. Add a method to create the container at the bottom of the **_Default** class. This method uses the configuration settings you entered in earlier steps.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex02-03-GetContainerMethod-CS_)
+	(Code Snippet - _ExploringStorage-Ex2-03-GetContainerMethod-CS_)
 	<!--mark: 4-11-->
 	````C#
 	public partial class _Default : System.Web.UI.Page
@@ -449,7 +454,7 @@ In this task, you will create an image gallery web page to display images retrie
 	
 1. Insert the following code (shown in **bold**) in the **Page_Load** method to initialize the container and refresh the **asp:ListView** control on the page that displays the images retrieved from storage.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex02-04-PageLoadMethod-CS_)
+	(Code Snippet - _ExploringStorage-Ex2-04-PageLoadMethod-CS_)
 	<!--mark: 6-27-->
 	````C#
 	public partial class _Default : System.Web.UI.Page
@@ -486,7 +491,7 @@ In this task, you will create an image gallery web page to display images retrie
 	
 1. Add the following method at the bottom of the **_Default** class to bind the images control to the list of blobs available in the image gallery container. The code uses the **ListBlobs** method in the **CloudBlobContainer** object to retrieve a collection of **IListBlobItem** objects that contain information about each of the blobs. The images **asp:ListView** control in the page binds to these objects to display their value.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex02-05-RefreshGalleryMethod-CS_)
+	(Code Snippet - _ExploringStorage-Ex2-05-RefreshGalleryMethod-CS_)
 	<!--mark: 4-13-->
 	````C#
 	public partial class _Default : System.Web.UI.Page
@@ -506,6 +511,8 @@ In this task, you will create an image gallery web page to display images retrie
 	````
 	
 1. Press **F5** to build and run the application. A browser window launches and displays the contents of the image gallery. Note that at this point, the container is empty and the list view displays a “No Data Available” message. In the next task, you will implement the functionality required to store images as blobs in Windows Azure storage.
+
+	>**Note:** Make sure the cloud project is set as the startup project by right-clicking it in **Solution Explorer** and selecting **Set as StartUp Project**.
 
 	![The image gallery application displaying an empty container](images/the-image-gallery-application.png?raw=true)
 
@@ -528,7 +535,7 @@ In this task, you add functionality to the image gallery Web page to enter metad
 
 1. Add a method at the bottom of the page to save images and their metadata as blobs in Windows Azure storage. The method uses the **GetBlobReference** method in the **CloudBlobContainer** object to create a blob from the image data array and the metadata properties.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex02-06-SaveImageMethod-CS_)
+	(Code Snippet - _ExploringStorage-Ex2-06-SaveImageMethod-CS_)
 	<!--mark: 4-22-->
 	````C#
 	public partial class _Default : System.Web.UI.Page
@@ -558,7 +565,7 @@ In this task, you add functionality to the image gallery Web page to enter metad
 	
 1. Complete the code in the event handler for the **Upload Image** button by inserting the code (shown in **bold** below) to **upload_Click** method.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex02-07-UploadClickMethod-CS_)
+	(Code Snippet - _ExploringStorage-Ex2-07-UploadClickMethod-CS_)
 	<!--mark: 6-24-->
 	````C#
 	public partial class _Default : System.Web.UI.Page
@@ -621,7 +628,7 @@ Blobs can have metadata attached to them. Metadata headers can be set on a reque
 	
 1. In the code-behind file, locate the **OnBlobDataBound** method and insert the following code (shown in **bold**) that retrieves the properties for each blob bound to the list view and creates a collection that contains name / value pairs for each metadata item found. The collection is then used as a data source for an **asp:Repeater** control that displays metadata for each image.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex02-08-OnBlobDataBoundMethod-CS_)
+	(Code Snippet - _ExploringStorage-Ex2-08-OnBlobDataBoundMethod-CS_)
 	<!--mark: 3-41-->
 	````C#
 	protected void OnBlobDataBound(object sender, ListViewItemEventArgs e)
@@ -709,7 +716,7 @@ In this task, you will add functionality to the image gallery Web page to delete
 
 1. Add code (shown in **bold**) to **Default.aspx.cs** to implement the command handler for the _deleteBlob_ **asp:LinkButton** control. The code verifies if a blob exists in storage and deletes it.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex02-09-OnDeleteImageMethod-CS_)
+	(Code Snippet - _ExploringStorage-Ex2-09-OnDeleteImageMethod-CS_)
 	<!--mark: 6-23-->
 	````C#
 	public partial class _Default : System.Web.UI.Page
@@ -789,7 +796,7 @@ Windows Azure Blob service has support for making copies of existing blobs. In t
 
 1. Add code (shown in **bold**) to **Default.aspx.cs** to implement the command handler for the _copyBlob_ **asp:LinkButton** control. The code creates a copy of a blob based on an existing blob. It also updates the *“ImageName”* attribute in its metadata to reflect that it is a copy.
  
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex02-10-OnCopyImageMethod-CS_)
+	(Code Snippet - _ExploringStorage-Ex2-10-OnCopyImageMethod-CS_)
 	<!--mark: 6-31-->
 	````C#
 	public partial class _Default : System.Web.UI.Page
@@ -888,7 +895,7 @@ In this task, you add functionality to take a snapshot of a blob that contains i
 
 1. Add code (shown in **bold**) to **Default.aspx.cs** to implement the command handler for the _snapshotBlob_ **asp:LinkButton control**. The code gets the source blob and takes a snapshot of it.
  
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex02-11-OnSnapshotImageMethod-CS_)
+	(Code Snippet - _ExploringStorage-Ex2-11-OnSnapshotImageMethod-CS_)
 	<!--mark: 6-18-->
 	````C#
 	public partial class _Default : System.Web.UI.Page
@@ -1015,7 +1022,7 @@ In this task, you implement the **RdStorage_WebRole** web application to send me
 
 1. Add the following namespace directives at the top of the file.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex03-01-Namespace-CS_)
+	(Code Snippet - _ExploringStorage-Ex3-01-Namespace-CS_)
 	<!--mark: 1-3-->
 	````C#
 	using Microsoft.WindowsAzure;
@@ -1025,7 +1032,7 @@ In this task, you implement the **RdStorage_WebRole** web application to send me
 
 1. Right-click **Default.aspx**, select **View Designer** and double-click the **Send message** button. Alternatively, you may edit the ASP.NET markup directly to insert the required event handler. Add the following code (shown in **bold**) to the btnSend_Click event to initialize the account information:
 	
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex03-02-WebRoleCreateAccount-CS_)
+	(Code Snippet - _ExploringStorage-Ex3-02-WebRoleCreateAccount-CS_)
 	<!--mark: 6,7-->
 	````C#
 	public partial class _Default : System.Web.UI.Page
@@ -1041,7 +1048,7 @@ In this task, you implement the **RdStorage_WebRole** web application to send me
 
 1. Next, add the following code (shown in **bold**) immediately after the code inserted in the previous step to obtain an instance of the **QueueStorage** helper object and create the message queue if it does not exist.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex03-03-WebRoleCreateQueue-CS_)
+	(Code Snippet - _ExploringStorage-Ex3-03-WebRoleCreateQueue-CS_)
 	<!--mark: 5-8-->
 	````C#
 	protected void btnSend_Click(object sender, EventArgs e)
@@ -1057,7 +1064,7 @@ In this task, you implement the **RdStorage_WebRole** web application to send me
 
 1. Add the following code (shown in **bold**) immediately after the code inserted in the previous step to put the message entered by the user into the queue.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex03-04-WebRoleAddMessage-CS_)
+	(Code Snippet - _ExploringStorage-Ex3-04-WebRoleAddMessage-CS_)
 	<!--mark: 5-8-->
 	````C#
 	protected void btnSend_Click(object sender, EventArgs e)
@@ -1075,7 +1082,7 @@ In this task, you implement the **RdStorage_WebRole** web application to send me
 
 1. Append the following namespace to the existing directives at the top of the code file.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex03-05-Namespace-CS_)
+	(Code Snippet - _ExploringStorage-Ex3-05-Namespace-CS_)
 	<!--mark: 1-->
 	````C#
 	using Microsoft.WindowsAzure.StorageClient;
@@ -1090,7 +1097,7 @@ In this task, you update the worker role to retrieve messages from the queue and
 
 1. Add the following code (shown in **bold**) to the **Application_Start** method to initialize the account information.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex03-06-InitializeAccount-CS_)
+	(Code Snippet - _ExploringStorage-Ex3-06-InitializeAccount-CS_)
 	<!--mark: 3-6-->	
 	````C#
 	void Application_Start(object sender, EventArgs e)
@@ -1104,7 +1111,7 @@ In this task, you update the worker role to retrieve messages from the queue and
 
 1. Make sure the following namespace directives exist on the top of the code files.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex03-07-Namespace-CS_)
+	(Code Snippet - _ExploringStorage-Ex3-07-Namespace-CS_)
 	<!--mark: 1,2-->
 	````C#
 	using Microsoft.WindowsAzure;
@@ -1115,7 +1122,7 @@ In this task, you update the worker role to retrieve messages from the queue and
 
 1. Add the following highlighted code to the **OnStart** method directly above **return base.OnStart()** in WorkerRole.cs to initialize the account information.
  
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex03-08-InitializeAccount-CS_)
+	(Code Snippet - _ExploringStorage-Ex3-08-InitializeAccount-CS_)
 	<!--mark: 9-12-->
 	````C#
 	public override bool OnStart()
@@ -1137,7 +1144,7 @@ In this task, you update the worker role to retrieve messages from the queue and
 	
 1. Make sure the following namespace directives exist on the top of the code files.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex03-09-Namespace-CS_)
+	(Code Snippet - _ExploringStorage-Ex3-09-Namespace-CS_)
 	<!--mark: 1-6-->
 	````C#
 	using System.Diagnostics;
@@ -1150,7 +1157,7 @@ In this task, you update the worker role to retrieve messages from the queue and
 
 1. In the **Run** method, obtain an instance of the **QueueStorage** helper object and retrieve a reference to the _messages_ queue. To do this, add the following code (shown in **bold**) and remove the following lines of code (shown in ~~strikethrough~~) that simulate the worker role latency..
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex03-10-WorkerGetQueue-CS_)
+	(Code Snippet - _ExploringStorage-Ex3-10-WorkerGetQueue-CS_)
 	<!--mark: 12-17; strike: 6-10-->
 	````C#
 	public override void Run()
@@ -1175,7 +1182,7 @@ In this task, you update the worker role to retrieve messages from the queue and
 	
 1. Next, add the following highlighted code to retrieve messages and write them to the compute emulator log. The message is then removed from the queue.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex03-11-WorkerGetMessages-CS_)
+	(Code Snippet - _ExploringStorage-Ex3-11-WorkerGetMessages-CS_)
 	<!--mark: 5-20-->
 	````C#
 	public override void Run()
@@ -1209,6 +1216,8 @@ In this task, you update the worker role to retrieve messages from the queue and
 To test your service running in the compute emulator:
 
 1. In Visual Studio, press **F5** to build and run the application.
+
+	>**Note:** Make sure the cloud project is set as the startup project by right-clicking it in **Solution Explorer** and selecting **Set as StartUp Project**.
 
 1. Open the compute emulator UI. To do this, right-click its icon located in the system tray and select **Show Compute Emulator UI**. (The icon is an azure colored Window.)
 
@@ -1275,6 +1284,8 @@ PhotoAlbum is a sample application that uses standard file system APIs to obtain
 
 1. Press **F5** to build and run the PhotoAlbum application. Notice that the default page shows a listing of the files contained in the image store. Also, notice that the path to the image store is the folder on your machine that you set up in the application configuration file.
 
+	>**Note:** Make sure the cloud project is set as the startup project by right-clicking it in **Solution Explorer** and selecting **Set as StartUp Project**.
+
 	![Running the PhotoAlbum application locally ](images/running-the-photoalbum-application-locally.png?raw=true)
 
 	_Running the PhotoAlbum application locally_
@@ -1336,7 +1347,7 @@ In this task, you update the application to run as a Windows Azure cloud service
 
 1. Configure a trace listener to output diagnostics information to the Windows Azure log. To do this, double-click **Web.config** in **Solution Explorer** to open this file and insert the following **system.diagnostics** section into the configuration, as shown below.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex04-01-DiagnosticMonitorTraceListener_)
+	(Code Snippet - _ExploringStorage-Ex4-01-DiagnosticMonitorTraceListener_)
 	<!--mark: 3-12-->
 	````XML
 	<?xml version="1.0"?>
@@ -1344,7 +1355,7 @@ In this task, you update the application to run as a Windows Azure cloud service
 		  <system.diagnostics>
 			<trace>
 			  <listeners>
-				<add type="Microsoft.WindowsAzure.Diagnostics.DiagnosticMonitorTraceListener, Microsoft.WindowsAzure.Diagnostics, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
+				<add type="Microsoft.WindowsAzure.Diagnostics.DiagnosticMonitorTraceListener, Microsoft.WindowsAzure.Diagnostics, Version=1.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
 				  name="AzureDiagnostics">
 				  <filter type="" />
 				</add>
@@ -1362,7 +1373,7 @@ In this task, you update the application to run as a Windows Azure cloud service
 
 1. Locate the **Application_Start** method in **Global.asax.cs** file and insert the following code (shown in **bold**) to this method. 
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex04-02-ApplicationStartMethod-CS_)
+	(Code Snippet - _ExploringStorage-Ex4-02-ApplicationStartMethod-CS_)
 	<!--mark: 8-51-->
 	````C#
 	protected void Application_Start(object sender, EventArgs e)
@@ -1425,7 +1436,7 @@ In this task, you update the application to run as a Windows Azure cloud service
 	
 1. Make sure the following namespace directives exist at the top of the **Global.asax.cs** code file.
 
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex04-03-GlobalNamespace-CS_)
+	(Code Snippet - _ExploringStorage-Ex4-03-GlobalNamespace-CS_)
 	<!--mark: 1-4-->
 	````C#
 	using System.Diagnostics;
@@ -1436,7 +1447,7 @@ In this task, you update the application to run as a Windows Azure cloud service
  
 1. Next, insert the following highlighted code into the **Application_End** method to unmount the Windows Azure Drive when the Web role shuts down.  Place the code at the start of the method.
 	
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex04-04-ApplicationEndMethod-CS_)
+	(Code Snippet - _ExploringStorage-Ex4-04-ApplicationEndMethod-CS_)
 	<!--mark: 3-7-->
 	````C#
 	protected void Application_End(object sender, EventArgs e)
@@ -1459,9 +1470,9 @@ In this task, you update the application to run as a Windows Azure cloud service
 	
 1. Next, you determine the location of the folder used by storage emulator to simulate the cloud drive. To display the compute emulator UI, right-click the Windows Azure tray icon and then select **Show Storage Emulator UI**.
 
-	![Showing the Compute Emulator UI](images/showing-the-compute-emulator-ui.png?raw=true)
+	![Showing the Compute Emulator UI](images/viewing-the-status-of-storage-emulator.png?raw=true)
 
-	_Showing the Compute Emulator UI_
+	_Showing the Storage Emulator UI_
 
 1. In the Storage Emulator UI, open the **File** menu and select **Open Azure Drive Folder in Windows Explorer**. 	
 
@@ -1471,7 +1482,7 @@ In this task, you update the application to run as a Windows Azure cloud service
 
 	> **Note:** When running locally, the storage emulator does not use blob storage to simulate the cloud drive. Instead, it maps the drive to a local folder. From the storage emulator UI, you can open a Windows Explorer window pointing at the temporary folder used by storage emulator to store simulated Windows Azure drives.
 
-1. Inside the Azure Drive folder, navigate to **devstoreaccount1\mydrives\SamplePictures.vhd**. Note that this path matches the URI of the blob - in the storage emulator, hence the **devstoreaccount1** prefix - that you assigned to store the drive.
+1. Inside the Azure Drive folder, navigate to **devstoreaccount1\mydrives\SamplePictures.vhd**. Note that this path matches the URI of the blob - in the storage emulator, hencstorage emulator to simulate e the **devstoreaccount1** prefix - that you assigned to store the drive.
 
 1. Now, open the **Start** menu, select **Pictures** to open your pictures library and then double-click the **Sample Pictures** folder to open a window with sample image files.
 
@@ -1500,7 +1511,7 @@ In this task, you update the application to create a new drive in the cloud, mou
 
 1. Insert the highlighted markup inside the body of the page, between the **h1** and **h2** heading tags, as shown below.
 	
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex04-05-MountedDrives Panel_)
+	(Code Snippet - _ExploringStorage-Ex4-05-MountedDrives Panel_)
 	<!--mark: 6-12-->
 	````HTML
 	...
@@ -1527,7 +1538,7 @@ In this task, you update the application to create a new drive in the cloud, mou
 
 1. Add the following namespace directives at the top of the file to declare the Windows Azure supporting assemblies.
 	
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex04-06-AzureNamespaces-CS_)
+	(Code Snippet - _ExploringStorage-Ex4-06-AzureNamespaces-CS_)
 	<!--mark: 1-4-->
 	````C#
 	using Microsoft.WindowsAzure;
@@ -1538,7 +1549,7 @@ In this task, you update the application to create a new drive in the cloud, mou
 
 1. Locate the **Page_PreRender** method and insert the following highlighted code at the end of the method, as shown below.
 	
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex04-07-Page_PreRender-CS_)
+	(Code Snippet - _ExploringStorage-Ex4-07-Page_PreRender-CS_)
 	<!--mark: 5-19-->
 	````C#
 	protected void Page_PreRender(object sender, EventArgs e)
@@ -1567,7 +1578,7 @@ In this task, you update the application to create a new drive in the cloud, mou
  
 1. Add code to implement an event handler for the **New Drive** link button. To do this, paste the following code into the **_Default** class.
 	
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex04-08-NewDrive_Click-CS_)
+	(Code Snippet - _ExploringStorage-Ex4-08-NewDrive_Click-CS_)
 	<!--mark: 1-45-->
 	````C#
 	protected void NewDrive_Click(object sender, EventArgs e)
@@ -1621,7 +1632,7 @@ In this task, you update the application to create a new drive in the cloud, mou
 
 1. Finally, add an event handler for the **SelectedIndexChanged** event of the mounted drives drop down list. To do this, insert the following method into the **_Default** class.
 	
-	(Code Snippet - _ExploringWindowsAzureStorage-Ex04-09-MountedDrives_SelectedIndexChanged-CS_)
+	(Code Snippet - _ExploringStorage-Ex4-09-MountedDrives_SelectedIndexChanged-CS_)
 	<!--mark: 1-4-->
 	````C#
 	protected void MountedDrives_SelectedIndexChanged(object sender, EventArgs e)
@@ -1768,15 +1779,28 @@ For more information, visit the [Windows Azure Portal][9].
 
 <a name="Ex4Task5" />
 #### Task 5 - Deploying the Application and Uploading the Drive to Windows Azure####
+
 In this task, you upload the NTFS-formatted Virtual Hard Drive (VHD) created previously to a Windows Azure Page Blob. The lab material includes a tool that you can use for this purpose.
 
-1. Before you access your Windows Azure Storage account to upload the VHD file, you need to determine the name and primary key of the account. To obtain your storage account information, sign in at the Windows Azure Management Portal <http://windows.azure.com/> and select the subscription where you will deploy your application. Choose your storage service from the list of services and record the value shown, in the Properties panel, for the **name**-this is the first segment in the endpoint URL-and the **Primary Access Key** of the storage account by clicking on the **View** button (use the **Copy to Clipboard** button to get the full access key).
+1. Before you access your Windows Azure Storage account to upload the VHD file, you need to determine the name and primary key of the account. To obtain your storage account information, sign in at the Windows Azure Management Portal <http://windows.azure.com/>.
+
+1. Click **Storage** and then select your account from the list. Take note of the account **name**.
+
+	![Viewing Windows Azure storage accounts](images/viewing-windows-azure-storage-accounts.png?raw=true "Viewing Windows Azure storage accounts")
+
+	_Viewing storage accounts_
+
+1. Click **Manage Keys** within the bottom menu and take note of the storage account's **Primary Key** (you will use this value later in this exercise).
+
+	![Manage keys](images/manage-keys.png?raw=true "Manage keys")
+
+	_Manage Keys_
 
 	![Viewing Windows Azure storage account information](images/viewing-windows-azure-storage-account-informa.png?raw=true)
 
 	_Viewing Windows Azure storage account information_
 
-1. Next, open a command prompt and change the current directory to _ExploringWindowsAzureStorageVS2010\\Source\\Assets\\VHDUpload_.
+1. Next, open a command prompt and change the current directory to _\\Source\\Assets\\VHDUpload_.
 
 1. At the command prompt, type the following command line replacing _\<vhdFilePath\>_ with the path to the VHD file created in task 4, and **\<accountName\>** and **\<accountKey\>** with the name and the primary access key of your Windows Azure storage account , respectively. 
 
@@ -1823,55 +1847,41 @@ In this task, you upload the NTFS-formatted Virtual Hard Drive (VHD) created pre
 
 1. To deploy the service package, go to the [Management Portal][10] and sign in. 
 
-[10]:http://windows.azure.com
+[10]:https://manage.windowsazure.com/
 
 1. At the portal, select the project where you will deploy your application. If you have not previously created a service, you will need to create one at this time; otherwise, you may use an existing service. In that case, skip the following steps and go directly to step 20. 
 
-1. Create the compute component that executes the application code. Click **Hosted Services** on the left pane. Click **New Hosted Service** button on the ribbon.
+1. Create the compute component that executes the application code. To do this, click **New** | **Cloud Service** | **Custom Create**.
 
-	![Creating a new hosted service](images/creating-a-new-hosted-service.png?raw=true)
+	![Creating a new cloud service](images/creating-a-new-cloud-service.png?raw=true "Creating a new cloud service")
 
-	_Creating a new hosted service_
+	_Creating a new cloud service_
 
-1. In the **Create a new Hosted Service** dialog, select the subscription where you wish to create the service from the drop down list labeled **Choose a subscription**.
+1. In the **Create a cloud service** dialog, select a unique **URL** prefix for your service and then choose an available **Region/Affinity Group** from the list.
 
-1. Enter a service name in the textbox labeled **Enter a name for your service** and choose its URL  by entering a prefix in the textbox labeled  **Enter a URL prefix for your service**.
+1. Select **Deploy a Cloud Service package now** and continue to the next step.
 
-1. Select the option labeled **Choose a region** and then pick any of the available regions.
+	![Create Your Cloud Service](images/create-your-cloud-service.png?raw=true "Create Your Cloud Service")
 
-1. Select the option labeled **Do not Deploy**.
+	_Create a cloud service_
 
-	>**Note:** While you can create and deploy your service to Windows Azure in a single operation by completing the **Deployment Options** section, for this hands-on lab, you will defer the deployment step until the next task.
+1. In the **Publish your cloud service** page, select a **Deployment Name** and then, select the Package (**.cspkg**) and Configuration (**.cscfg**) files that you generated in Visual Studio: you can find them in the file system location indicated by the Windows Explorer window that opened when you published the package.
 
-	![Configuring the hosted service](images/configuring-the-hosted-service.png?raw=true)
+1. Finally, set the **Environment** where you want to deploy the application (_Production_ or _Staging_), select **Deploy even if one or more reoles contain a single instance** and finish the wizard.
 
-	_Configuring the hosted service_
+	![Publish your cloud service](images/publish-your-cloud-service.png?raw=true "Publish your cloud service")
 
-1. Click **OK** to create the hosted service and then wait until the provisioning process completes.
+	_Publish your cloud service_
 
-1. Choose the service where you wish to deploy the application. 
 
-1. Now, click **New Production Deployment** or **New Staging Deployment** according to where you want to initially run the service, Production or Staging.
-
-	![Deploying an application to the hosted service](images/deploying-an-application-to-the-hosted-servic.png?raw=true)
-
-	_Deploying an application to the hosted service_
-
-1. In the **Create a new Deployment** dialog, you will be prompted to select the **.cspkg** and **.cscfg** files that you generated in Visual Studio: you can find them in the file system location indicated by the Windows Explorer window that opened when you published the package. Once you select both file paths, enter an arbitrary label for the deployment in the Deployment name field, for example, the current date, and then click **OK**.
-
-	![Creating a new deployment](images/creating-a-new-deployment.png?raw=true)
-
-	_Creating a new deployment_
-
-	> **Note:** A Windows Azure virtual machine runs a guest operating system into which your service application is deployed. To support the Windows Azure Drive feature, the operating system version must be compatible with the Windows Azure SDK version 1.1 or higher. For information on available versions of the Windows Azure guest operating system, see [http://msdn.microsoft.com/en-us/library/ee924680(v=MSDN.10).aspx](http://msdn.microsoft.com/en-us/library/ee924680\(v=MSDN.10\).aspx).
+	> **Note:** A Windows Azure virtual machine runs a guest operating system into which your service application is deployed. To support the Windows Azure Drive feature, the operating system version must be compatible with the Windows Azure SDK version 1.7. For information on available versions of the Windows Azure guest operating system, see [http://msdn.microsoft.com/en-us/library/ee924680(v=MSDN.10).aspx](http://msdn.microsoft.com/en-us/library/ee924680\(v=MSDN.10\).aspx).
 	
 	> In general, it is recommended to use the latest available OS to take advantage of new features and security fixes. If you do not specify a version in your configuration file, the OS upgrade method is set to automatic and Windows Azure automatically upgrades your VMs to the latest release of the guest OS, once it becomes available. For this lab, you will not choose a specific version and instead use automatic upgrade mode to ensure that the application runs under a guest OS that supports Windows Azure Drives.
 
-	
 
 1. Wait for the transfer to complete. The status of the service should show **Ready** when completed.
 
-1. Now, click **DNS name** in the **Properties** pane to open the application in your browser. The application should behave in essentially the same manner as it did when you deployed it locally. However, notice that the URL of the page blob for the mounted drive is now pointing to the page blob where you uploaded the VHD file.
+1. Now, click **URL** link within your recently deployed service to open the application in your browser. The application should behave in essentially the same manner as it did when you deployed it locally. However, notice that the URL of the page blob for the mounted drive is now pointing to the page blob where you uploaded the VHD file.
 
 	![Running the application in the Windows Azure environment](images/running-the-application-in-the-windows-azure.png?raw=true)
 
