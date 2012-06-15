@@ -3,9 +3,9 @@
 	<title>Exploring Windows Azure Storage</title>
 	<dependencies>
 	<dependency
-		hint="WindowsAzureToolsVS2010"
-		name="Windows Azure Tools for Microsoft Visual Studio 2010 (Latest)"
-		helpLink="http://go.microsoft.com/fwlink/?LinkID=231172"
+		hint="VWDOrVs2010SP1AzurePack"
+		name="Windows Azure SDK for .NET"
+		helpLink=""
 		disableSkip="false"
 		type="WebPI" />
     </dependencies>
