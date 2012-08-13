@@ -1,14 +1,14 @@
-﻿<a name="handsonlab" />
+﻿<a name="handsonlab"></a>
 # Exploring Windows Azure Storage #
 ---
 
-<a name="Overview" />
+<a name="Overview"></a>
 ## Overview ##
 
 Storage services provide persistent, durable storage in the Windows Azure compute emulator, and include blob and table service and the queue service. In addition, using Windows Azure Drives, your Windows Azure applications running in the cloud can use existing NTFS APIs to access a durable drive backed by blob storage.
 In this lab, you will examine the basic process of working with Windows Azure storage on the local compute emulator, and explore some of the features that are available to developers.
 
-<a name="Objectives" />
+<a name="Objectives"></a>
 ### Objectives ###
 
 In this hands-on lab, you will learn how to:
@@ -19,7 +19,7 @@ In this hands-on lab, you will learn how to:
 -	Create and read metadata
 -	Use Windows Azure Drives
 
-<a name="Prerequisites" />
+<a name="Prerequisites"></a>
 ### Prerequisites ###
 
 - IIS 7 (with ASP.NET, WCF HTTP Activation, Tracing)
@@ -27,7 +27,7 @@ In this hands-on lab, you will learn how to:
 - [Microsoft Visual Studio 2010] [2]
 - [SQL Server 2012 Express Edition] [3]
 - [Windows Azure Tools for Microsoft Visual Studio 1.7] [4]
-- A Windows Azure subscription - you can sign up for free trial [here](http://bit.ly/WindowsAzureFreeTrial)
+- A Windows Azure subscription - [sign up for a free trial](http://aka.ms/WATK-FreeTrial)
 
 [1]: http://go.microsoft.com/fwlink/?linkid=186916
 [2]: http://msdn.microsoft.com/vstudio/products/
@@ -36,7 +36,7 @@ In this hands-on lab, you will learn how to:
 
 >**Note:** This lab was designed to use Windows 7.
 	
-<a name="Setup" />
+<a name="Setup"></a>
 ### Setup ###
 
 In order to execute the exercises in this hands-on lab you need to set up your environment.
@@ -48,14 +48,14 @@ In order to execute the exercises in this hands-on lab you need to set up your e
 
 > **Note:** Make sure you have checked all the dependencies for this lab before running the setup.
 
-<a name="CodeSnippets" />
+<a name="CodeSnippets"></a>
 ### Using the Code Snippets ###
 
 Throughout the lab document, you will be instructed to insert code blocks. For your convenience, most of that code is provided as Visual Studio Code Snippets, which you can use from within Visual Studio 2010 to avoid having to add it manually.
 
 ---
 
-<a name="Exercises" />
+<a name="Exercises"></a>
 ## Exercises ##
 
 This hands-on lab includes the following exercises:
@@ -71,7 +71,7 @@ Estimated time to complete this lab: **90 minutes**.
 >
 >When you first start Visual Studio, you must select one of the predefined settings collections. Every predefined collection is designed to match a particular development style and determines window layouts, editor behavior, IntelliSense code snippets, and dialog box options. The procedures in this lab describe the actions necessary to accomplish a given task in Visual Studio when using the **General Development Settings** collection. If you choose a different settings collection for your development environment, there may be differences in these procedures that you need to take into account.
 
-<a name="Exercise1" />
+<a name="Exercise1"></a>
 ### Exercise 1: Working with Tables ###
 
 In this exercise, you use the Windows Azure Table Service API to create a simple application that stores and retrieves data in structured storage. It consists of a simple chat Web application that can save, retrieve and display messages stored in a Windows Azure table.
@@ -85,7 +85,7 @@ To access Windows Azure Table Service, you use a REST API that is compatible wit
 
 >**Note:** To reduce typing, you can right-click where you want to insert source code, select Insert Snippet, select My Code Snippets and then select the entry matching the current exercise step.
 
-<a name="Ex1Task1" />
+<a name="Ex1Task1"></a>
 #### Task 1 - Configuring Storage Account Settings ####
 
 In this task, you configure the settings required to make a connection to the Table Service.
@@ -128,7 +128,7 @@ In this task, you configure the settings required to make a connection to the Ta
 **DataConnectionString**: This is the connection string to the Window Azure account, through which we can programmatically access data storage and other functionalities in Windows Azure. This connection string can point to a Windows Azure Account in the cloud as well as the local compute emulator.
 **Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString**: This is the connection string to Windows Azure server, same as _DataConnectionString_, however this one is dedicated for logging diagnostics.
 
-<a name="Ex1Task2" />
+<a name="Ex1Task2"></a>
 #### Task 2 - Creating Classes to Model the Table Schema ####
 
 When working locally against the Storage Emulator service for Table Service, you use WCF Data Services client library.
@@ -246,7 +246,7 @@ Together, the **PartitionKey** and **RowKey** define the **DataServiceKey** that
 	
 1. In the Build menu, select Build Solution.
 
-<a name="Ex1Task3" />
+<a name="Ex1Task3"></a>
 #### Task 3 – Creating the Chat User Interface ####
 
 In this task, you add the code necessary to store messages in a Windows Azure table and display them on the Web page.
@@ -330,7 +330,7 @@ In this task, you add the code necessary to store messages in a Windows Azure ta
 
 1. Save the all files and select **Build Solution** from the **Build** menu.
 
-<a name="Ex1Verification" />
+<a name="Ex1Verification"></a>
 #### Verification ####
 
 To test your service running in the Compute Emulator:
@@ -355,14 +355,14 @@ To test your service running in the Compute Emulator:
 	
 	_Using the Windows Azure chat application_
 	
-<a name="Exercise2" />
+<a name="Exercise2"></a>
 ### Exercise 2: Working with Blobs ###
 
 In this exercise, you will use the Windows Azure Blob Service API to create an application that saves and retrieves image data stored as blobs in Windows Azure storage. It consists of a simple image gallery Web site that can display, upload and remove images in Windows Azure storage, and allows you to enter and display related metadata. The application uses a single container to store its image content as blobs.
 
 When you create a blob in Windows Azure, you associate a content type that specifies the format in which the API returns it and allows you to retrieve an image directly from the URL of the corresponding blob.
 
-<a name="Ex2Task1" />
+<a name="Ex2Task1"></a>
 #### Task 1 – Retrieving Blob Data from Storage ####
 
 In this task, you will create an image gallery web page to display images retrieved from Windows Azure storage. The provided solution consists of a web site project with a single page that contains the elements required to display images and enter metadata.  You will add the necessary functionality by editing the code-behind file.
@@ -527,7 +527,7 @@ In this task, you will create an image gallery web page to display images retrie
 	
 1. Press **SHIFT+F5** in Visual Studio to stop debugging and delete the deployment from the compute emulator.
 
-<a name="Ex2Task2" />
+<a name="Ex2Task2"></a>
 #### Task 2 – Uploading Blob Data to Storage ####
 
 In this task, you add functionality to the image gallery Web page to enter metadata and upload image files to Windows Azure storage. The page contains text controls that you can use to enter descriptive metadata for the selected image. An **asp:FileUpload** control on the page retrieves images from disk and posts them to the page, where they are stored in blob storage.
@@ -616,7 +616,7 @@ In this task, you add functionality to the image gallery Web page to enter metad
 	
 1. In Visual Studio, press **SHIFT+F5** to stop debugging and delete the deployment from the Compute Emulator.
 
-<a name="Ex2Task3" />
+<a name="Ex2Task3"></a>
 #### Task 3 – Retrieving Metadata for Blobs in Storage ####
 
 Blobs can have metadata attached to them. Metadata headers can be set on a request that creates a new container or blob resource, or on a request that explicitly creates a property on an existing resource. In this task, you will add functionality to the image gallery page to retrieve and display metadata associated with images stored in a Windows Azure container.
@@ -684,7 +684,7 @@ Blobs can have metadata attached to them. Metadata headers can be set on a reque
 	
 1. Press **SHIFT+F5** to stop debugging and delete the deployment from the compute emulator.
 
-<a name="Ex2Task4" />
+<a name="Ex2Task4"></a>
 #### Task 4 – Deleting Blobs from Storage ####
 
 In this task, you will add functionality to the image gallery Web page to delete blobs containing image data from Windows Azure storage.
@@ -758,7 +758,7 @@ In this task, you will add functionality to the image gallery Web page to delete
 	
 1. Press **SHIFT+F5** to stop debugging and delete the deployment from the Compute Emulator.
 
-<a name="Ex2Task5" />
+<a name="Ex2Task5"></a>
 #### Task 5 – Copying Blobs ####
 
 Windows Azure Blob service has support for making copies of existing blobs. In this task, you will add functionality to the image gallery Web page to copy blobs containing image data from Windows Azure storage that you added earlier.
@@ -852,7 +852,7 @@ Windows Azure Blob service has support for making copies of existing blobs. In t
 	
 1. Press **SHIFT+F5** to stop debugging and delete the deployment from the Compute Emulator.
 
-<a name="Ex2Task6" />
+<a name="Ex2Task6"></a>
 #### Task 6 – Taking Blob Snapshots ####
 
 Windows Azure Blob service has support for taking snapshots of blobs. The different between a snapshot and a copy is that snapshots are read-only and the original blob maintains a relationship to its snapshots; blob copies on the other hand are editable. Once a snapshot has been taken for a blob, this source blob can no longer be deleted. Before a source blob can be deleted, all of its snapshots must be deleted first.
@@ -946,14 +946,14 @@ In this task, you add functionality to take a snapshot of a blob that contains i
 	
 	> **Note:** To delete a blob that contains snapshots, all of its snapshots must be deleted first (that functionality is not provided in this solution).
 
-<a name="Exercise3" />
+<a name="Exercise3"></a>
 ### Exercise 3: Working with Queues ###
 
 In this exercise, you create a simple Web application to send messages to a Windows Azure queue. A Worker role in the solution retrieves the messages and writes them to the compute emulator log.
 
 Queue service is a great way to send messages between front-end roles and worker roles. A queue can contain an unlimited number of messages, each of which can be up to 64 KB in size. Messages are pushed to the end of the queue and popped from the front of the queue.
 
-<a name="Ex3Task1" />
+<a name="Ex3Task1"></a>
 #### Task 1 – Creating the Initial Solution ####
 
 In this task, you create and configure the initial solution to work with queues in Windows Azure.
@@ -995,7 +995,7 @@ In this task, you create and configure the initial solution to work with queues 
 	
 	_Configuring a connection string to use Compute Emulator_
 
-<a name="Ex3Task2" />
+<a name="Ex3Task2"></a>
 #### Task 2 – Sending Messages to the Queue ####
 
 In this task, you implement the **RdStorage_WebRole** web application to send messages to the queue.
@@ -1089,7 +1089,7 @@ In this task, you implement the **RdStorage_WebRole** web application to send me
 	using Microsoft.WindowsAzure.StorageClient;
 	````
 
-<a name="Ex3Task3" />
+<a name="Ex3Task3"></a>
 #### Task 3 – Retrieving Messages from the Queue ####
 
 In this task, you update the worker role to retrieve messages from the queue and show them in the compute emulator log.
@@ -1211,7 +1211,7 @@ In this task, you update the worker role to retrieve messages from the queue and
 	
 > **Note:** The worker process will try to get a message from the queue every 10 seconds using the GetMessage method. If there are messages in the queue, it will show them in the Compute Emulator log.
 
-<a name="Ex3Verification" />
+<a name="Ex3Verification"></a>
 #### Verification ####
 
 To test your service running in the compute emulator:
@@ -1242,7 +1242,7 @@ To test your service running in the compute emulator:
 
 	> **Note:** Because of the worker sleep time, it may take several seconds to show the message. 
 
-<a name="Exercise4" />
+<a name="Exercise4"></a>
 ### Exercise 4: Working with Drives ###
 	
 A Windows Azure Drive is an NTFS formatted virtual hard disk (VHD) file that is stored in a page blob. You can mount this VHD into a Windows Azure Compute instance to provide persistent storage exposed to applications via the Windows file system. The content of an Azure Drive will persist even if the compute role to which it is mounted is recycled.
@@ -1251,7 +1251,7 @@ In this exercise, you take an existing application that makes use of regular Win
 
 In the first part of the exercise, you execute the original application in the ASP.NET development server to familiarize yourself with its operation. Next, you create a cloud service project, associate the application as a Web role, and run it in the compute emulator using simulated Azure Drives. Finally, you create a VHD on your local machine, upload it to blob storage, deploy the application to Windows Azure and mount the drive in a Windows Azure instance.
 	
-<a name="Ex4Task1" />
+<a name="Ex4Task1"></a>
 #### Task 1 - Exploring the PhotoAlbum Application####
 
 PhotoAlbum is a sample application that uses standard file system APIs to obtain a directory listing of the contents of its image store. In this task, you briefly examine the application and then configure the location of the image store to a folder in your machine to run the application locally.
@@ -1293,7 +1293,7 @@ PhotoAlbum is a sample application that uses standard file system APIs to obtain
 
 1. Close the browser window. You have now seen that the application uses standard file system APIs to access the files in its store. In the next task, you will update the application to run as a cloud service.
 
-<a name="Ex4Task2" />
+<a name="Ex4Task2"></a>
 #### Task 2 - Using a Windows Azure Drive to Move the Application to the Cloud####
 
 When moving the application to Windows Azure, the natural choice is to relocate the image store to blob storage. Regardless, the application expects its images to be stored in the file system. You can always update the code that accesses the images in the store and change it to use the Blob service APIs instead. For a simple application such as this one, this would not be too challenging, but it can represent a barrier for a more complex application. Using Windows Azure Drives enables you to move the application to the cloud without any changes to its code, other than mounting the drive on a page blob.
@@ -1503,7 +1503,7 @@ In this task, you update the application to run as a Windows Azure cloud service
 
 1. Close the browser window.
 
-<a name="Ex4Task3" />
+<a name="Ex4Task3"></a>
 #### Task 3 - Creating a New Drive in the Cloud####
 
 In this task, you update the application to create a new drive in the cloud, mount it, and then copy the contents of the original drive into it.
@@ -1672,7 +1672,7 @@ In this task, you update the application to create a new drive in the cloud, mou
 
 1. Close the browser window. You will now deploy and test the application in Windows Azure.
 
-<a name="Ex4Task4" />
+<a name="Ex4Task4"></a>
 #### Task 4 - Creating an NTFS Formatted VHD on Your Local Machine####
 
 So far, you have explored Windows Azure Drives using the simulated environment provided by the compute emulator. When you deploy the application to the Windows Azure environment, you need a mechanism to upload the information used by the application to blob storage. One alternative is creating a Virtual Hard Drive (VHD) locally in your machine, copying the required information, and then uploading the VHD file to a Windows Azure page blob.
@@ -1778,7 +1778,7 @@ For more information, visit the [Windows Azure Portal][9].
 
 1. You are now ready to upload the virtual hard disk (VHD) file to Windows Azure Storage.
 
-<a name="Ex4Task5" />
+<a name="Ex4Task5"></a>
 #### Task 5 - Deploying the Application and Uploading the Drive to Windows Azure####
 
 In this task, you upload the NTFS-formatted Virtual Hard Drive (VHD) created previously to a Windows Azure Page Blob. The lab material includes a tool that you can use for this purpose.
@@ -1890,7 +1890,7 @@ In this task, you upload the NTFS-formatted Virtual Hard Drive (VHD) created pre
 
 ---
 	
-<a name="Summary" />
+<a name="Summary"></a>
 ## Summary ##
 
 In this lab, you have learned how to work with the Windows Azure Storage using tables, blobs, queues and drives.
