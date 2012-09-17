@@ -14,7 +14,7 @@
   <Description>In this hands-on lab you will examine each of the foundation storage capabilities of Windows Azure-Blobs, Tables and Queues. You'll discover how to create storage accounts, how to upload and retrieve blobs and blob metadata, how to create, update and query tables, and how to create a simple service that uses a message queue for communication. Finally, you'll explore the use of Windows Azure Drives.</Description>
   <Document ConversionType="Html">.\HOL.md</Document>  
   <Title>Exploring Windows Azure Storage</Title>
-  <Version>3.1.0</Version>
+  <Version>3.1.1</Version>
   <Source>.\Source</Source>
 <DependencyChecker>.\source\Setup\Dependencies.depi</DependencyChecker>
   <CustomProperties>    
